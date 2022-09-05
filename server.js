@@ -1,31 +1,25 @@
 //setup and imports
 const express = require('express');
 const app=express();
-
-const messagesController=require('./controllers/messages.controller')
-const friendsController=require('./controllers/friends.controller')
+const friendsRouter = require('./routes/freinds.router');
+const messageRouter =require('./routes/message.router')
 
 //preset data
 const PORT=4000;
 
-//middleware endpoint
+//middleware 
 app.use(function(req,res,next){
     const start=Date.now();
     next();//goes to the get method
     const delta=Date.now()-start;
-    console.log(`${req.method} to ${req.url} in ${delta}ms`)
-
+    console.log(`${req.method} to ${req.baseUrl}${req.url} in ${delta}ms`)
 })
+
 app.use(express.json());
+app.use('/friends',friendsRouter)
+app.use('/messages',messageRouter)
 
-//friends endpoints
-app.get('/friends',friendsController.getFriend)
-app.post('/friends',friendsController.postFriend);
-app.get('/friends/:id',friendsController.getFriendByID)
 
-//messages
-app.get('/messages',messagesController.getMessages)
-app.post('/messages',messagesController.addMessage);
 
 //sets up server to listen
 app.listen(PORT,()=>{
